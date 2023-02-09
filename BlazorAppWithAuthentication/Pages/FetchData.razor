@@ -1,5 +1,5 @@
-﻿@page "/fetchdata"
-
+@page "/fetchdata"
+@inherits CustomComponentBase
 @using BlazorAppWithAuthentication.Data
 @inject WeatherForecastService ForecastService
 
@@ -13,6 +13,9 @@
 }
 else
 {
+    <button @onclick="async () => await GetData()">Refresh</button>
+    <br/>
+    <br/>
     <table class="table">
         <thead>
             <tr>
@@ -34,13 +37,4 @@ else
             }
         </tbody>
     </table>
-}
-
-@code {
-    private WeatherForecast[] forecasts;
-
-    protected override async Task OnInitializedAsync()
-    {
-        forecasts = await ForecastService.GetForecastAsync(DateTime.Now);
-    }
 }

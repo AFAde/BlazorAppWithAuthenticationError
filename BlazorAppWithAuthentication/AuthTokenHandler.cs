@@ -4,23 +4,26 @@ using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace BlazorAppWithAuthentication
 {
     public class AuthTokenHandler : DelegatingHandler
     {
-        private readonly AuthenticationStateProvider _authenticationStateProvider;
+        private readonly BlazorServiceAccessor _blazorServiceAccessor;
 
-        public AuthTokenHandler(AuthenticationStateProvider authenticationStateProvider)
+        public AuthTokenHandler(BlazorServiceAccessor accessor, IServiceProvider services)
         {
-            _authenticationStateProvider = authenticationStateProvider ?? throw new ArgumentNullException(nameof(authenticationStateProvider));
-            _authenticationStateProvider = authenticationStateProvider;
+            _blazorServiceAccessor = accessor ?? throw new ArgumentNullException(nameof(accessor));
         }
 
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             _ = request ?? throw new ArgumentNullException(nameof(request));
-            var token = await _authenticationStateProvider.GetAuthenticationStateAsync();
+
+            var authService = _blazorServiceAccessor.Services
+                                                    .GetRequiredService<AuthenticationStateProvider>();
+            var token = await authService.GetAuthenticationStateAsync();
             //just as example
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer",
                                                                           token.ToString());

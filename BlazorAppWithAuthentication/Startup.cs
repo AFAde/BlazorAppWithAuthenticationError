@@ -41,9 +41,10 @@ namespace BlazorAppWithAuthentication
             services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
             services.AddScoped<WeatherForecastService>();
             services.AddScoped<AuthenticationInfoService>();
+            services.AddScoped<BlazorServiceAccessor>();
             services.AddScoped<AuthTokenHandler>();
             services.AddHttpClient<TestHttpClient>()
-                .AddHttpMessageHandler<AuthTokenHandler>();
+                    .AddHttpMessageHandler<AuthTokenHandler>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
